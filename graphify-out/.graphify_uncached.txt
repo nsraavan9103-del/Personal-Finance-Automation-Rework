@@ -1,0 +1,8 @@
+C:\Users\Sraavan\Desktop\Projects\Personal-Finance-Automation-main\.opencode\plans\IMPLEMENTATION_PLAN.md
+C:\Users\Sraavan\Desktop\Projects\Personal-Finance-Automation-main\.opencode\plans\REBUILD_PLAN.md
+C:\Users\Sraavan\Desktop\Projects\Personal-Finance-Automation-main\.opencode\plans\TODO.md
+C:\Users\Sraavan\Desktop\Projects\Personal-Finance-Automation-main\README.md
+C:\Users\Sraavan\Desktop\Projects\Personal-Finance-Automation-main\backend-errors.md
+C:\Users\Sraavan\Desktop\Projects\Personal-Finance-Automation-main\backend\requirements.txt
+C:\Users\Sraavan\Desktop\Projects\Personal-Finance-Automation-main\docs\superpowers\plans\2026-09-23-document-upload-history.md
+C:\Users\Sraavan\Desktop\Projects\Personal-Finance-Automation-main\frontend\index.html
