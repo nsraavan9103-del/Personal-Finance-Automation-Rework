@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback, useEffect } from 'react'
+import React, { createContext, useContext, useState, useCallback } from 'react'
 import axios from 'axios'
 
 const API_BASE = '/api'
@@ -55,17 +55,6 @@ export function TransactionProvider({ children }) {
     })
     refreshData()
   }, [refreshData])
-
-  // Expose updateTransactionCategory to window for components that can't use hooks
-  useEffect(() => {
-    window.__TRANSACTION_CONTEXT__ = {
-      updateTransactionCategory,
-      refreshData
-    }
-    return () => {
-      delete window.__TRANSACTION_CONTEXT__
-    }
-  }, [updateTransactionCategory, refreshData])
 
   const value = {
     transactions,

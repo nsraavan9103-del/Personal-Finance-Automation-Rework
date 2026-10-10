@@ -14,7 +14,7 @@ function App() {
       <div className="min-h-screen bg-gray-50 flex">
         {/* Sidebar */}
         <aside className={`${sidebarOpen ? 'w-72' : 'w-0'} overflow-hidden bg-white border-r border-gray-200 transition-all duration-300 flex-shrink-0`}>
-          <UploadHistory onRefreshTransactions={() => window.dispatchEvent(new CustomEvent('refresh-transactions'))} />
+          <UploadHistory />
         </aside>
 
         {/* Main content */}

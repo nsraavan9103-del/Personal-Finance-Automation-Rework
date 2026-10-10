@@ -1,14 +1,24 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useDocuments } from '../hooks/useDocuments'
+import { useTransactions } from '../context/TransactionContext'
 
-export function UploadHistory({ onRefreshTransactions }) {
+export function UploadHistory() {
   const { documents, loading, error, deleteDocument, fetchDocuments } = useDocuments()
+  const { refreshData } = useTransactions()
   const [confirmDeleteId, setConfirmDeleteId] = useState(null)
+
+  // ponytail: DOM-event sync from FileUpload; lift documents into TransactionContext
+  // if more components ever need to share this list.
+  useEffect(() => {
+    const handler = () => fetchDocuments()
+    window.addEventListener('refresh-documents', handler)
+    return () => window.removeEventListener('refresh-documents', handler)
+  }, [])
 
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this document and all its transactions? This cannot be undone.')) return
     await deleteDocument(id)
-    if (onRefreshTransactions) onRefreshTransactions()
+    refreshData()
   }
 
   const formatDate = (dateString) => {
