@@ -26,12 +26,12 @@ function SummaryTable() {
   }
 
   return (
-    <div className="bg-ink-800 border border-ink-600 p-6">
-      <h2 className="text-xl font-bold mb-4">Expense Summary</h2>
+    <div className="bg-ink-800 border border-ink-600 rounded-xl p-6">
+      <h2 className="font-display text-xl font-bold mb-4 text-mist-100">Expense Summary</h2>
       
       {/* Error Message */}
       {error && (
-        <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+        <div className="mb-4 p-3 bg-rose-500/10 border border-rose-500/20 text-rose-300 rounded">
           {error}
         </div>
       )}
@@ -52,7 +52,7 @@ function SummaryTable() {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-mist-100">
                     {item.category}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-mist-100">
+                  <td className="px-6 py-4 whitespace-nowrap font-display text-sm text-brass-300 tnum">
                     AED {parseFloat(item.total_amount).toFixed(2)}
                   </td>
                 </tr>
@@ -70,7 +70,7 @@ function SummaryTable() {
       
       {/* Total Expenses */}
       <div className="mt-4 pt-4 border-t border-ink-600">
-        <p className="text-lg font-semibold text-right">
+        <p className="font-display text-lg font-bold text-right text-brass-300 tnum">
           Total Expenses: AED {summary.reduce((sum, item) => sum + parseFloat(item.total_amount), 0).toFixed(2)}
         </p>
       </div>

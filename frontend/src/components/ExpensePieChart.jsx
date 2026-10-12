@@ -34,7 +34,7 @@ function ExpensePieChart() {
   const COLORS = ['#E3C77F', '#2DD4BF', '#A78BFA', '#60A5FA', '#FB7185', '#34D399', '#FBBF24', '#818CF8', '#22D3EE', '#F97316']
 
   return (
-    <div className="bg-ink-800 border border-ink-600 rounded-lg p-6">
+    <div className="bg-ink-800 border border-ink-600 rounded-xl p-6">
       <h2 className="font-display text-xl font-bold mb-4 text-mist-100">Expense Distribution</h2>
 
       {/* Error Message */}

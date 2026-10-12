@@ -59,10 +59,10 @@ function CategoryManager() {
   const isProtected = (name) => name === 'Uncategorized'
 
   return (
-    <div className="bg-ink-800 border border-ink-600 p-6">
+    <div className="bg-ink-800 border border-ink-600 rounded-xl p-6">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold text-mist-100">Category Manager</h2>
-        <span className="text-sm text-mist-500">{categories.length} categories</span>
+        <h2 className="font-display text-xl font-bold text-mist-100">Category Manager</h2>
+        <span className="text-sm text-mist-500 tnum">{categories.length} categories</span>
       </div>
       
       {/* Add Category Form */}
@@ -72,13 +72,13 @@ function CategoryManager() {
           value={newCategoryName}
           onChange={(e) => setNewCategoryName(e.target.value)}
           placeholder="Enter new category name"
-          className="flex-1 border border-ink-600 rounded-lg px-4 py-3 focus:ring-2 focus:ring-glow focus:border-glow outline-none transition-shadow"
+          className="flex-1 bg-ink-900 text-mist-100 placeholder:text-mist-600 border border-ink-600 rounded-lg px-4 py-3 focus:ring-2 focus:ring-glow focus:border-glow outline-none transition-shadow"
           maxLength={100}
         />
         <button
           type="submit"
           disabled={loading || !newCategoryName.trim()}
-          className="bg-glow-strong hover:bg-glow text-ink-950 disabled:bg-ink-700 disabled:text-mist-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-glow focus:ring-offset-2 whitespace-nowrap"
+          className="bg-glow-strong hover:bg-glow text-ink-950 disabled:bg-ink-700 disabled:text-mist-600 font-display font-semibold py-3 px-6 rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-glow focus-visible:ring-offset-2 focus-visible:ring-offset-ink-800 whitespace-nowrap"
         >
           {loading ? (
             <span className="flex items-center gap-2">
@@ -127,7 +127,7 @@ function CategoryManager() {
                 <button
                   onClick={() => handleDeleteCategory(category.id)}
                   disabled={deletingId === category.id}
-                  className="text-sm text-white bg-rose-600 hover:bg-rose-500 disabled:bg-rose-800 px-4 py-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2"
+                  className="text-sm bg-rose-600/90 hover:bg-rose-500 disabled:bg-rose-800 text-mist-100 px-4 py-2 rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-800"
                 >
                   {deletingId === category.id ? (
                     <span className="flex items-center gap-1">

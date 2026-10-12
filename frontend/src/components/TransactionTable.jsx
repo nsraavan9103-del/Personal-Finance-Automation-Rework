@@ -80,7 +80,7 @@ function TransactionTable({ initialDebitCredit = 'Debit' }) {
   }
 
   return (
-    <div className="bg-ink-800 border border-ink-600 rounded-lg p-6">
+    <div className="bg-ink-800 border border-ink-600 rounded-xl p-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
         <h2 className="font-display text-xl font-bold text-mist-100">Transactions</h2>
         <div className="flex flex-wrap items-center gap-4">
@@ -203,7 +203,7 @@ function TransactionTable({ initialDebitCredit = 'Debit' }) {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-mist-100 max-w-xs truncate" title={transaction.details}>
                     {transaction.details}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-mist-100 font-medium">
+                  <td className="px-6 py-4 whitespace-nowrap font-display text-sm text-brass-300 tnum">
                     {formatCurrency(transaction.amount, transaction.currency)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -222,8 +222,8 @@ function TransactionTable({ initialDebitCredit = 'Debit' }) {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
                     {transaction.category_id && transaction.category_id !== uncategorizedCategoryId ? (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-            <span className="w-1.5 h-1.5 bg-green-500 rounded-full mr-1.5" />
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-400/10 text-emerald-300">
+            <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full mr-1.5" />
             Categorized
           </span>
         ) : (

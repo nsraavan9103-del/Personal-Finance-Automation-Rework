@@ -93,7 +93,7 @@ function FileUpload() {
   }
 
   return (
-    <div className="bg-ink-800 border border-ink-600 rounded-lg p-6">
+    <div className="bg-ink-800 border border-ink-600 rounded-xl p-6">
       <h2 className="font-display text-xl font-bold mb-4 text-mist-100">Upload Bank Statement</h2>
 
       <form onSubmit={handleUpload} className="space-y-4">

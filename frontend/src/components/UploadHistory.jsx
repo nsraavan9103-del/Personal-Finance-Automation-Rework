@@ -38,7 +38,7 @@ export function UploadHistory() {
       </div>
       
       {error && (
-        <div className="p-4 text-red-600 text-sm">{error}</div>
+        <div className="p-4 text-rose-300 text-sm">{error}</div>
       )}
 
       <div className="flex-1 overflow-y-auto">
@@ -65,7 +65,7 @@ export function UploadHistory() {
                   <button
                     onClick={() => handleDelete(doc.id)}
                     disabled={confirmDeleteId === doc.id}
-                    className="text-red-600 hover:text-rose-300 text-sm font-medium px-2 py-1 whitespace-nowrap flex-shrink-0"
+                    className="text-rose-400 hover:text-rose-300 focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-800 rounded text-sm font-medium px-2 py-1 whitespace-nowrap flex-shrink-0"
                   >
                     Delete
                   </button>

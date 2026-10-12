@@ -33,8 +33,37 @@
 
 body {
   font-family: var(--font-sans);
-  background: var(--color-ink-950);
+  background:
+    radial-gradient(1200px 500px at 15% -5%, rgba(45, 212, 191, 0.07), transparent 60%),
+    radial-gradient(1000px 500px at 90% 110%, rgba(227, 199, 127, 0.06), transparent 60%),
+    var(--color-ink-950);
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Futuristic display type: tight, even tracking */
+.font-display {
+  letter-spacing: -0.01em;
+}
+
+/* Money figures: tabular so columns align */
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Darken native form popups */
+select option {
+  background-color: var(--color-ink-900);
+  color: var(--color-mist-100);
+}
+input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0.55;
+}
+
+/* Visible keyboard focus everywhere */
+:focus-visible {
+  outline: 2px solid var(--color-glow);
+  outline-offset: 2px;
 }
 
 ::selection {

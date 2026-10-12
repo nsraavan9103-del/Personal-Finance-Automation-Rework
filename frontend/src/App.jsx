@@ -19,7 +19,7 @@ function App() {
 
         {/* Main content */}
         <div className="flex-1 flex flex-col min-w-0">
-          <header className="bg-ink-800/80 backdrop-blur border-b border-ink-600 sticky top-0 z-10">
+          <header className="bg-ink-800/80 backdrop-blur border-b border-ink-600 shadow-[0_1px_24px_rgba(45,212,191,0.06)] sticky top-0 z-10">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center gap-4">
               <button
                 onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -31,6 +31,7 @@ function App() {
                 </svg>
               </button>
               <h1 className="font-display text-2xl font-bold tracking-tight text-mist-100">Personal Finance Dashboard</h1>
+              <span className="hidden sm:inline-block text-xs font-display tracking-wide text-mist-600 border border-ink-600 rounded-full px-3 py-1">Dark preview</span>
             </div>
           </header>
           
