@@ -1,1 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
+
+@theme {
+  /* Ink — surfaces, darkest to raised */
+  --color-ink-950: #0B0E14;
+  --color-ink-900: #10151F;
+  --color-ink-800: #151B28;
+  --color-ink-700: #1C2333;
+  --color-ink-600: #263048;
+  --color-ink-500: #323B4F;
+
+  /* Mist — text, muted to bright */
+  --color-mist-300: #B7BECB;
+  --color-mist-100: #ECEDF2;
+  --color-mist-500: #8891A3;
+  --color-mist-600: #6B7488;
+
+  /* Accents */
+  --color-glow: #5EEAD4;        /* interactive teal */
+  --color-glow-strong: #2DD4BF; /* buttons */
+  --color-brass-300: #E9D5A1;   /* money highlight */
+  --color-brass-400: #E3C77F;
+  --color-brass-500: #D4AF6A;
+
+  --font-display: "Space Grotesk", "Inter", system-ui, sans-serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+}
+
+:root {
+  color-scheme: dark; /* native selects, date pickers, scrollbars */
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-ink-950);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: rgba(45, 212, 191, 0.25);
+}
+
+/* Slim dark scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: #263048; border-radius: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* Recharts on dark */
+.recharts-pie-label-text { fill: #B7BECB; font-size: 12px; }
+.recharts-legend-item-text { color: #B7BECB !important; }

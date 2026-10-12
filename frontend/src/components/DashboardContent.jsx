@@ -19,7 +19,7 @@ function DashboardContent({ activeTab }) {
       )}
       {activeTab === 'credits' && (
         <>
-          <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+          <div className="bg-ink-800 border border-ink-600 rounded-lg p-6 mb-6">
             <h2 className="text-xl font-bold mb-4">Total Payments (Credits)</h2>
             <TransactionTable initialDebitCredit="Credit" />
           </div>

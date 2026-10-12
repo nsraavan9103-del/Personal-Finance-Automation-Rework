@@ -8,15 +8,15 @@ function TabNavigation({ activeTab, onTabChange }) {
 
   return (
     <div className="mb-6">
-      <div className="flex gap-2 bg-gray-100 rounded-lg p-1">
+      <div className="inline-flex gap-1 bg-ink-900 border border-ink-600 rounded-lg p-1">
         {tabs.map(tab => (
           <button
             key={tab.id}
             onClick={() => onTabChange(tab.id)}
-            className={`flex items-center gap-2 px-5 py-3 rounded-lg font-medium text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-md font-display font-medium text-sm tracking-wide transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-glow ${
               activeTab === tab.id
-                ? 'bg-white shadow-md text-blue-700 shadow-sm'
-                : 'text-gray-600 hover:bg-white hover:text-gray-900'
+                ? 'bg-ink-700 text-glow'
+                : 'text-mist-500 hover:bg-ink-800 hover:text-mist-300'
             }`}
           >
             <span className="text-lg">{tab.icon}</span>

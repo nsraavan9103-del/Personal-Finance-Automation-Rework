@@ -26,7 +26,7 @@ function SummaryTable() {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
+    <div className="bg-ink-800 border border-ink-600 p-6">
       <h2 className="text-xl font-bold mb-4">Expense Summary</h2>
       
       {/* Error Message */}
@@ -38,28 +38,28 @@ function SummaryTable() {
       
       {/* Summary Table */}
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+        <table className="min-w-full divide-y divide-ink-600">
+          <thead className="bg-ink-900">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-mist-500 uppercase tracking-wider">Category</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-mist-500 uppercase tracking-wider">Amount</th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="divide-y divide-ink-600">
             {summary.length > 0 ? (
               summary.map(item => (
-                <tr key={item.category} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <tr key={item.category} className="hover:bg-ink-900">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-mist-100">
                     {item.category}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-mist-100">
                     AED {parseFloat(item.total_amount).toFixed(2)}
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td className="px-6 py-4 text-center text-gray-500" colSpan={2}>
+                <td className="px-6 py-4 text-center text-mist-500" colSpan={2}>
                   No expense data found
                 </td>
               </tr>
@@ -69,7 +69,7 @@ function SummaryTable() {
       </div>
       
       {/* Total Expenses */}
-      <div className="mt-4 pt-4 border-t border-gray-200">
+      <div className="mt-4 pt-4 border-t border-ink-600">
         <p className="text-lg font-semibold text-right">
           Total Expenses: AED {summary.reduce((sum, item) => sum + parseFloat(item.total_amount), 0).toFixed(2)}
         </p>

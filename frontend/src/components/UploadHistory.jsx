@@ -32,9 +32,9 @@ export function UploadHistory() {
   }
 
   return (
-    <div className="w-72 bg-white border-r border-gray-200 h-full flex flex-col">
-      <div className="p-4 border-b border-gray-200">
-        <h3 className="text-lg font-semibold text-gray-900">Uploads</h3>
+    <div className="w-72 bg-ink-800 border-r border-ink-600 h-full flex flex-col">
+      <div className="p-4 border-b border-ink-600">
+        <h3 className="text-lg font-semibold text-mist-100">Uploads</h3>
       </div>
       
       {error && (
@@ -43,29 +43,29 @@ export function UploadHistory() {
 
       <div className="flex-1 overflow-y-auto">
         {loading ? (
-          <div className="p-4 text-center text-gray-500">Loading...</div>
+          <div className="p-4 text-center text-mist-500">Loading...</div>
         ) : documents.length === 0 ? (
-          <div className="p-4 text-center text-gray-500 text-sm">No documents uploaded yet</div>
+          <div className="p-4 text-center text-mist-500 text-sm">No documents uploaded yet</div>
         ) : (
-          <ul className="divide-y divide-gray-200">
+          <ul className="divide-y divide-ink-600">
             {documents.map(doc => (
-              <li key={doc.id} className="p-4 hover:bg-gray-50 transition-colors">
+              <li key={doc.id} className="p-4 hover:bg-ink-900 transition-colors">
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-gray-900 truncate" title={doc.filename}>
+                    <p className="font-medium text-mist-100 truncate" title={doc.filename}>
                       {doc.filename}
                     </p>
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-mist-500 mt-1">
                       {formatDate(doc.upload_date)} • {doc.transaction_count} transactions • {formatSize(doc.file_size)}
                     </p>
-                    <p className="text-xs text-gray-400 mt-1 font-mono">
+                    <p className="text-xs text-mist-600 mt-1 font-mono">
                       {doc.file_hash.slice(0, 16)}...
                     </p>
                   </div>
                   <button
                     onClick={() => handleDelete(doc.id)}
                     disabled={confirmDeleteId === doc.id}
-                    className="text-red-600 hover:text-red-800 text-sm font-medium px-2 py-1 whitespace-nowrap flex-shrink-0"
+                    className="text-red-600 hover:text-rose-300 text-sm font-medium px-2 py-1 whitespace-nowrap flex-shrink-0"
                   >
                     Delete
                   </button>

@@ -11,26 +11,26 @@ function App() {
 
   return (
     <TransactionProvider>
-      <div className="min-h-screen bg-gray-50 flex">
+      <div className="min-h-screen bg-ink-950 flex">
         {/* Sidebar */}
-        <aside className={`${sidebarOpen ? 'w-72' : 'w-0'} overflow-hidden bg-white border-r border-gray-200 transition-all duration-300 flex-shrink-0`}>
+        <aside className={`${sidebarOpen ? 'w-72' : 'w-0'} overflow-hidden bg-ink-800 border-r border-ink-600 transition-all duration-300 flex-shrink-0`}>
           <UploadHistory />
         </aside>
 
         {/* Main content */}
         <div className="flex-1 flex flex-col min-w-0">
-          <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-10">
+          <header className="bg-ink-800/80 backdrop-blur border-b border-ink-600 sticky top-0 z-10">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center gap-4">
               <button
                 onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="p-2 rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors"
+                className="p-2 rounded-lg text-mist-500 hover:bg-ink-700 hover:text-mist-100 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-glow"
                 aria-label="Toggle uploads sidebar"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               </button>
-              <h1 className="text-2xl font-bold text-gray-900">Personal Finance Dashboard</h1>
+              <h1 className="font-display text-2xl font-bold tracking-tight text-mist-100">Personal Finance Dashboard</h1>
             </div>
           </header>
           
