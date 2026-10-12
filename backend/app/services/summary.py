@@ -1,8 +1,6 @@
 ﻿from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
-from sqlalchemy.orm import selectinload
 from typing import List, Dict, Any
-from decimal import Decimal
 
 from app.models.category import Category
 from app.models.transaction import Transaction

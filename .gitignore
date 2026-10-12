@@ -87,3 +87,7 @@ categories.json
 
 # Node / frontend dependencies
 node_modules/
+
+# Agent-generated caches and test artifacts
+graphify-out/
+frontend/test-results/

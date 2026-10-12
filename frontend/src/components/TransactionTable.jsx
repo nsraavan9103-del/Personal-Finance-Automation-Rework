@@ -9,6 +9,8 @@ function TransactionTable({ initialDebitCredit = 'Debit' }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
+  const [categoryFilter, setCategoryFilter] = useState('')
+  const [statusFilter, setStatusFilter] = useState('')
 
   useEffect(() => {
     fetchData()
@@ -19,11 +21,6 @@ function TransactionTable({ initialDebitCredit = 'Debit' }) {
     setError(null)
     
     try {
-      const transactionParams = new URLSearchParams()
-      if (debitCreditFilter) transactionParams.append('debit_credit', debitCreditFilter)
-      if (dateFrom) transactionParams.append('date_from', dateFrom)
-      if (dateTo) transactionParams.append('date_to', dateTo)
-      
       const [transactionsResponse, categoriesResponse] = await Promise.all([
         fetchTransactions({ debitCredit: debitCreditFilter, dateFrom, dateTo }),
         fetchCategories()
@@ -55,19 +52,23 @@ function TransactionTable({ initialDebitCredit = 'Debit' }) {
     }
   }
 
-  // Filter transactions based on search query
-  const filteredTransactions = useMemo(() => {
-    if (!searchQuery.trim()) return transactions
-    const query = searchQuery.toLowerCase().trim()
-    return transactions.filter(transaction => 
-      transaction.details.toLowerCase().includes(query)
-    )
-  }, [transactions, searchQuery])
-
   const uncategorizedCategoryId = useMemo(() => {
     const cat = categories.find(c => c.name === 'Uncategorized')
     return cat?.id
   }, [categories])
+
+  // Filter by search, category and categorization status (all client-side)
+  const filteredTransactions = useMemo(() => {
+    const query = searchQuery.toLowerCase().trim()
+    return transactions.filter(t => {
+      if (query && !t.details.toLowerCase().includes(query)) return false
+      if (categoryFilter && String(t.category_id) !== categoryFilter) return false
+      const isCategorized = t.category_id && t.category_id !== uncategorizedCategoryId
+      if (statusFilter === 'categorized' && !isCategorized) return false
+      if (statusFilter === 'uncategorized' && isCategorized) return false
+      return true
+    })
+  }, [transactions, searchQuery, categoryFilter, statusFilter, uncategorizedCategoryId])
   
   const formatDate = (dateString) => {
     if (!dateString) return ''
@@ -95,7 +96,6 @@ function TransactionTable({ initialDebitCredit = 'Debit' }) {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search transactions..."
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                placeholder="Search by name..."
               />
             </div>
           </div>
@@ -108,6 +108,31 @@ function TransactionTable({ initialDebitCredit = 'Debit' }) {
             >
               <option value="Debit">Expenses (Debits)</option>
               <option value="Credit">Payments (Credits)</option>
+            </select>
+          </div>
+          <div className="flex items-center gap-2">
+            <label className="text-sm font-medium text-gray-700">Category:</label>
+            <select
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+            >
+              <option value="">All</option>
+              {categories.map(c => (
+                <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
+            </select>
+          </div>
+          <div className="flex items-center gap-2">
+            <label className="text-sm font-medium text-gray-700">Status:</label>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+            >
+              <option value="">All</option>
+              <option value="categorized">Categorized</option>
+              <option value="uncategorized">Uncategorized</option>
             </select>
           </div>
           <div className="flex items-center gap-2">

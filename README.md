@@ -49,7 +49,7 @@ pip install -r requirements.txt
 
 Create `backend/.env`:
 ```env
-DATABASE_URL=postgresql://finance_user:finance_access@localhost:5432/finance_db
+DATABASE_URL=postgresql://finance_user:CHANGE_ME@localhost:5432/finance_test
 CORS_ORIGINS=http://localhost:5173
 SECRET_KEY=your-secret-key
 DEBUG=true
@@ -60,9 +60,9 @@ DEBUG=true
 ```bash
 # Create database and user in PostgreSQL
 psql -U postgres
-CREATE DATABASE finance_db;
-CREATE USER finance_user WITH PASSWORD 'finance_access';
-GRANT ALL PRIVILEGES ON DATABASE finance_db TO finance_user;
+CREATE DATABASE finance_test;
+CREATE USER finance_user WITH PASSWORD 'CHANGE_ME';
+GRANT ALL PRIVILEGES ON DATABASE finance_test TO finance_user;
 \q
 
 # Run migrations
@@ -148,10 +148,13 @@ Date,Details,Amount,Debit/Credit
 ### Backend
 ```bash
 cd backend
-python -m pytest tests/           # Run tests
+python -m pytest tests/           # Run tests (uses the finance_test_unit database)
 alembic revision --autogenerate -m "message"  # New migration
 alembic upgrade head              # Apply migrations
 ```
+
+> Tests never touch `finance_test` (the app's database). They use `finance_test_unit` — create it once as the postgres superuser:
+> `CREATE DATABASE finance_test_unit OWNER finance_user;`
 
 ### Frontend
 ```bash
@@ -220,3 +223,5 @@ personal-finance/
 ## License
 
 MIT License
+
+

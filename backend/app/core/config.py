@@ -4,13 +4,13 @@ import ast
 
 
 class Settings(BaseSettings):
-    DATABASE_URL: str = "postgresql://finance_user:finance_access@localhost:5432/finance_db"
+    DATABASE_URL: str = "postgresql://finance_user:CHANGE_ME@localhost:5432/finance_test"
     CORS_ORIGINS: Union[str, List[str]] = "http://localhost:5173"
-    SECRET_KEY: str = "dev-secret-change-in-production"
     DEBUG: bool = True
 
     class Config:
         env_file = ".env"
+        extra = "ignore"
 
     @property
     def cors_origins_list(self) -> List[str]:

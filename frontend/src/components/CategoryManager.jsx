@@ -11,7 +11,7 @@ function CategoryManager() {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get('/api/categories')
+      const response = await axios.get('/api/v1/categories')
       setCategories(response.data)
     } catch (err) {
       setError('Failed to load categories')
@@ -30,7 +30,7 @@ function CategoryManager() {
     setError(null)
     
     try {
-      const response = await axios.post('/api/categories', { name: newCategoryName.trim() })
+      const response = await axios.post('/api/v1/categories', { name: newCategoryName.trim() })
       setCategories([...categories, response.data])
       refreshData()
       setNewCategoryName('')
@@ -46,7 +46,7 @@ function CategoryManager() {
     
     setDeletingId(id)
     try {
-      await axios.delete('/api/categories/' + id)
+      await axios.delete('/api/v1/categories/' + id)
       setCategories(categories.filter(cat => cat.id !== id))
       refreshData()
     } catch (err) {

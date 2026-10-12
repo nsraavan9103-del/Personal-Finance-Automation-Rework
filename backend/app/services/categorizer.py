@@ -1,43 +1,35 @@
-﻿import pandas as pd
+﻿import re
+import pandas as pd
 from typing import Dict, Optional
 
 
-def normalize_text(text: str) -> str:
-    """Normalize text for comparison."""
-    import re
-    # Remove numbers and special characters, keep only letters and spaces
-    cleaned = re.sub(r'[^a-zA-Z\s]', ' ', text)
-    # Collapse multiple spaces
-    cleaned = re.sub(r'\s+', ' ', cleaned).strip()
-    return cleaned.lower()
-
-
-def get_significant_words(text: str, min_length: int = 3) -> set:
-    """Extract significant words from text (length >= min_length)."""
-    words = text.split()
-    stop_words = {'the', 'and', 'or', 'for', 'to', 'at', 'in', 'on', 'of', 'a', 'an', 'ltd', 'inc', 'corp', 'co', 'llc', 'pvt', 'plc', 'pty'}
-    return {w for w in text.split() if len(w) >= 3 and w.lower() not in {'the', 'and', 'or', 'for', 'to', 'at', 'in', 'on', 'of', 'a', 'an', 'ltd', 'inc', 'corp', 'co', 'llc', 'pvt', 'plc', 'pty'}}
+def normalize_for_match(text: str) -> str:
+    """Lowercase and strip punctuation so 'NETFLIX.COM' and 'NETFLIX COM' compare equal."""
+    return re.sub(r'\s+', ' ', re.sub(r'[^a-zA-Z0-9\s]', ' ', text)).strip().lower()
 
 
 def keyword_match(keyword: str, details: str) -> bool:
     """Check if keyword matches details using word-based matching.
-    
-    A keyword matches if all its significant words are present in the details.
+
+    A keyword matches if all its significant words (length >= 3) are present in the details.
+    Both sides are normalized (case + punctuation) so comparisons are symmetric.
     """
-    keyword_clean = keyword.lower().strip()
-    details_clean = details.lower().strip()
-    
+    keyword_clean = normalize_for_match(keyword)
+    details_clean = normalize_for_match(details)
+
+    # An empty keyword (punctuation-only) must not match everything
+    if not keyword_clean:
+        return False
+
     # Simple substring match first (fast path)
-    if keyword.lower() in details.lower():
+    if keyword_clean in details_clean:
         return True
-    
-    # Word-based matching: all significant words of keyword must be in details
-    keyword_words = set(w for w in keyword.lower().split() if len(w) >= 3)
-    details_words = set(details.lower().split())
-    
-    # Check if all significant keyword words are in details
-    significant_keyword_words = {w for w in keyword_words if len(w) >= 3}
-    return significant_keyword_words.issubset(details_words)
+
+    keyword_words = set(keyword_clean.split())
+    details_words = set(details_clean.split())
+
+    # All-short keywords (e.g. "CO") have no significant words and must not match everything
+    return bool(keyword_words) and keyword_words.issubset(details_words)
 
 
 def categorize_transactions(
@@ -46,7 +38,7 @@ def categorize_transactions(
     uncategorized_id: Optional[int]
 ) -> pd.DataFrame:
     """Categorize transactions using keyword matching (case-insensitive).
-    
+
     Matches if keyword's significant words are all contained in transaction details.
     Longer keywords are matched first for more specific matching.
     Preserves existing categories for transactions with no matching keyword.
@@ -54,22 +46,22 @@ def categorize_transactions(
     # Initialize Category column with 'Uncategorized' only for new rows (where it doesn't exist)
     if 'Category' not in df.columns:
         df['Category'] = 'Uncategorized'
-    
+
     # Sort keywords by length descending to match longer keywords first
     # (e.g., "STARBUCKS COFFEE" before "STARBUCKS")
     sorted_keywords = sorted(keyword_map.keys(), key=len, reverse=True)
-    
+
     for idx, row in df.iterrows():
         details = row['Details'].lower().strip()
         matched = False
-        
+
         for keyword in sorted_keywords:
             if keyword_match(keyword, details):
                 df.at[idx, 'Category'] = keyword_map[keyword]
                 matched = True
                 break
-        
+
         if not matched and uncategorized_id is not None:
             df.at[idx, 'Category'] = uncategorized_id
-    
+
     return df

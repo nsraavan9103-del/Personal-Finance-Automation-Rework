@@ -6,7 +6,6 @@
     KeywordCreate,
     KeywordRead,
     TransactionBase,
-    TransactionCreate,
     TransactionRead,
     TransactionSummary,
 )
@@ -21,7 +20,6 @@ __all__ = [
     'KeywordCreate',
     'KeywordRead',
     'TransactionBase',
-    'TransactionCreate',
     'TransactionRead',
     'TransactionSummary',
     'UploadResponse',

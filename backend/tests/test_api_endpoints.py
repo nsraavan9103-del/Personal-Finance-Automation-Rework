@@ -1,52 +1,12 @@
 import pytest
 from httpx import AsyncClient
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, text, delete
+from sqlalchemy import select, func
 from datetime import date
 from app.main import app
-from app.core.database import AsyncSessionLocal, engine, Base
+from app.core.database import AsyncSessionLocal
 from app.models.category import Category
 from app.models.keyword import Keyword
 from app.models.transaction import Transaction
-from app.api.deps import get_db
-
-
-@pytest.fixture(scope="function")
-async def db_session():
-    """Create a fresh database session for each test."""
-    async with AsyncSessionLocal() as session:
-        yield session
-        await session.rollback()
-
-
-@pytest.fixture(scope="function")
-async def clean_db(db_session: AsyncSession):
-    """Clean up database before and after each test."""
-    # Clean up before - use TRUNCATE for faster cleanup with CASCADE
-    await db_session.execute(text("TRUNCATE TABLE transactions, keywords, categories RESTART IDENTITY CASCADE"))
-    await db_session.commit()
-    
-    yield db_session
-    
-    # Clean up after
-    await db_session.execute(text("TRUNCATE TABLE transactions, keywords, categories RESTART IDENTITY CASCADE"))
-    await db_session.commit()
-
-
-@pytest.fixture(scope="function")
-async def async_client(clean_db: AsyncSession):
-    """Create an async HTTP client for testing with database session override."""
-    # Override the get_db dependency to use our test session
-    async def override_get_db():
-        yield clean_db
-    
-    app.dependency_overrides[get_db] = override_get_db
-    
-    async with AsyncClient(app=app, base_url="http://test") as client:
-        yield client
-    
-    # Clean up override
-    app.dependency_overrides.clear()
 
 
 class TestCategoriesAPI:
@@ -260,6 +220,58 @@ class TestTransactionsAPI:
             assert kw is not None
             assert kw.keyword == "STARBUCKS"
 
+    @pytest.mark.asyncio
+    async def test_update_category_response_includes_category(self, async_client, clean_db):
+        """Regression: response must embed the category without lazy-loading (live 500: MissingGreenlet)."""
+        # Set up in a separate session so the endpoint's session starts cold, like in production
+        async with AsyncSessionLocal() as setup_db:
+            cat = Category(name="Transport")
+            setup_db.add(cat)
+            await setup_db.flush()
+            txn = Transaction(date=date(2024, 1, 15), details='UBER TRIP', amount=45.00,
+                              currency='AED', debit_credit='Debit', category_id=None)
+            setup_db.add(txn)
+            await setup_db.commit()
+            txn_id, cat_id = txn.id, cat.id
+
+        response = await async_client.put(f"/api/v1/transactions/{txn_id}/category?category_id={cat_id}")
+        assert response.status_code == 200
+        data = response.json()
+        assert data["category_id"] == cat_id
+        assert data["category"]["name"] == "Transport"
+
+    @pytest.mark.asyncio
+    async def test_update_category_recategorizes_matching_transactions(self, async_client, clean_db):
+        """Manual categorization must retro-apply to all transactions with matching details."""
+        async with AsyncSessionLocal() as setup_db:
+            cat = Category(name="Shopping")
+            setup_db.add(cat)
+            await setup_db.flush()
+            ids = []
+            for amount in ('10.00', '20.00', '30.00'):
+                t = Transaction(date=date(2024, 1, 15), details='AMAZON AE', amount=amount,
+                                currency='AED', debit_credit='Debit', category_id=None)
+                setup_db.add(t)
+                await setup_db.flush()
+                ids.append(t.id)
+            other = Transaction(date=date(2024, 1, 15), details='ETISALAT BILL', amount=5.00,
+                                currency='AED', debit_credit='Debit', category_id=None)
+            setup_db.add(other)
+            await setup_db.commit()
+            cat_id, other_id = cat.id, other.id
+
+        response = await async_client.put(f"/api/v1/transactions/{ids[0]}/category?category_id={cat_id}")
+        assert response.status_code == 200
+
+        async with AsyncSessionLocal() as check:
+            from sqlalchemy import select as sa_select
+            rows = (await check.execute(
+                sa_select(Transaction.id, Transaction.category_id).order_by(Transaction.id)
+            )).all()
+        got = dict(rows)
+        assert all(got[i] == cat_id for i in ids)   # all matching transactions categorized
+        assert got[other_id] is None                # non-matching transaction untouched
+
 
 class TestUploadAPI:
     """Tests for Upload API endpoints."""
@@ -282,7 +294,24 @@ class TestUploadAPI:
         data = response.json()
         assert data["transactions_created"] == 2
         assert len(data["categories"]) >= 1
-        assert len(data["summary"]) >= 0
+
+    @pytest.mark.asyncio
+    async def test_upload_duplicate_csv_rejected(self, async_client: AsyncClient, clean_db):
+        """Test that uploading the same file twice is rejected (no duplicate transactions)."""
+        from app.models.category import Category
+        uncategorized = Category(name="Uncategorized")
+        clean_db.add(uncategorized)
+        await clean_db.commit()
+
+        csv_content = b"Date,Details,Amount,Debit/Credit\n15 Jan 2024,STARBUCKS,25.50,Debit"
+        files = {"file": ("test.csv", csv_content, "text/csv")}
+
+        first = await async_client.post("/api/v1/upload/csv", files=files)
+        assert first.status_code == 200
+
+        second = await async_client.post("/api/v1/upload/csv", files=files)
+        assert second.status_code == 409
+        assert "already" in second.json()["detail"].lower()
 
     @pytest.mark.asyncio
     async def test_upload_non_csv_fails(self, async_client: AsyncClient, clean_db):

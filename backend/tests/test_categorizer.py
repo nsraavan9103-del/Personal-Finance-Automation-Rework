@@ -161,6 +161,29 @@ class TestCategorizer:
         # STARBUCKS should match the shorter keyword (category 1)
         assert result.iloc[1]['Category'] == 1
 
+    def test_categorize_short_keyword_does_not_match_everything(self):
+        """A keyword whose words are all <3 chars must not match every transaction."""
+        df = pd.DataFrame({
+            'Details': ['SALARY SEPTEMBER', 'UBER TRIP'],
+            'Category': ['Uncategorized'] * 2
+        })
+
+        result = categorize_transactions(df, {'co': 1}, 99)
+
+        assert result.iloc[0]['Category'] == 99
+        assert result.iloc[1]['Category'] == 99
+
+    def test_keyword_match_is_punctuation_symmetric(self):
+        """Learned keywords have punctuation stripped, so matching must normalize both sides."""
+        from app.services.categorizer import keyword_match
+        assert keyword_match('NETFLIX COM', 'NETFLIX.COM') is True   # reported bug
+        assert keyword_match('NETFLIX.COM', 'netflix com') is True   # symmetric
+        assert keyword_match('AMAZON AE', 'AMAZON AE MARKETPLACE #51') is True
+        assert keyword_match('starbucks coffee', 'STARBUCKS') is False
+        assert keyword_match('co', 'SALARY SEPTEMBER') is False      # short keyword guard
+        assert keyword_match('---', 'anything here') is False        # punctuation-only keyword
+
+
     def test_categorize_preserves_dataframe_order(self):
         """Test that row order is preserved."""
         df = pd.DataFrame({

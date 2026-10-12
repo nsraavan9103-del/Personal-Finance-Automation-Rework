@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useCallback } from 'react'
 import axios from 'axios'
 
-const API_BASE = '/api'
+const API_BASE = '/api/v1'
 
 const TransactionContext = createContext(null)
 

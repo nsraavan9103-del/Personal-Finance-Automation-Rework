@@ -1,9 +1,6 @@
 ﻿from fastapi import APIRouter, Depends, UploadFile, File, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from typing import List
-import pandas as pd
-import io
 import hashlib
 
 from app.api.deps import get_db
@@ -13,8 +10,7 @@ from app.models.transaction import Transaction
 from app.models.document import Document
 from app.services.csv_parser import parse_csv
 from app.services.categorizer import categorize_transactions
-from app.services.summary import get_expense_summary
-from app.schemas.category import CategoryRead, TransactionSummary
+from app.schemas.category import CategoryRead
 from app.schemas.upload import UploadResponse
 from app.schemas.document import DocumentRead
 
@@ -23,15 +19,18 @@ router = APIRouter()
 
 @router.post('/csv', response_model=UploadResponse)
 async def upload_csv(file: UploadFile = File(...), db: AsyncSession = Depends(get_db)):
-    if not file.filename.endswith('.csv'):
+    if not file.filename or not file.filename.endswith('.csv'):
         raise HTTPException(status_code=400, detail='File must be a CSV')
-    
+
     content = await file.read()
-    
-    # Compute file hash
+
+    # Compute file hash and reject duplicate content
     file_hash = hashlib.sha256(content).hexdigest()
     file_size = len(content)
-    
+    dup = await db.execute(select(Document).where(Document.file_hash == file_hash))
+    if dup.scalar_one_or_none():
+        raise HTTPException(status_code=409, detail='This file has already been uploaded')
+
     try:
         df = parse_csv(content)
     except Exception as e:
@@ -80,16 +79,13 @@ async def upload_csv(file: UploadFile = File(...), db: AsyncSession = Depends(ge
     
     await db.commit()
     await db.refresh(document)
-    
-    # Get summary
-    summary = await get_expense_summary(db)
+
     categories_result = await db.execute(select(Category))
     categories_list = categories_result.scalars().all()
-    
+
     return UploadResponse(
         message=f'Successfully uploaded {len(transactions)} transactions',
         transactions_created=len(transactions),
         categories=[CategoryRead.model_validate(c) for c in categories_list],
-        summary=[TransactionSummary(category=s['category'], total_amount=s['total_amount']) for s in summary],
         document=DocumentRead.model_validate(document)
     )

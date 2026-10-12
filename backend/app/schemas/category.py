@@ -48,10 +48,6 @@ class TransactionBase(BaseModel):
     category_id: Optional[int] = None
 
 
-class TransactionCreate(TransactionBase):
-    pass
-
-
 class TransactionRead(TransactionBase):
     id: int
     uploaded_at: datetime

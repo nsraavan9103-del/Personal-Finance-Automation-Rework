@@ -61,8 +61,8 @@ function ExpensePieChart() {
                 innerRadius={60}
                 outerRadius={120}
                 labelLine={false}
-                label={({ name, value, percentage }) => (
-                  `${name}: ${percentage}%`
+                label={({ name, percent }) => (
+                  `${name}: ${(percent * 100).toFixed(1)}%`
                 )}
               >
                 {data.map((entry, index) => (

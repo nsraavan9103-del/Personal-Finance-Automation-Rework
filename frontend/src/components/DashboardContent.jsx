@@ -7,9 +7,9 @@ import ExpensePieChart from './ExpensePieChart'
 function DashboardContent({ activeTab }) {
   return (
     <div className="space-y-6">
+      <CategoryManager />
       {activeTab === 'debits' && (
         <>
-          <CategoryManager />
           <TransactionTable initialDebitCredit="Debit" />
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <SummaryTable />

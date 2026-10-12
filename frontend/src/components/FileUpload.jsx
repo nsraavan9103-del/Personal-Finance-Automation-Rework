@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react'
 import axios from 'axios'
 import { useTransactions } from '../context/TransactionContext'
 
-const API_BASE = '/api'
+const API_BASE = '/api/v1'
 
 function FileUpload() {
   const { refreshData } = useTransactions()
